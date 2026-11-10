@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#ff8000"/>
+<title>CAFE44 — Menù</title>
+<style>
+:root{
+  --brand:#ff8000; --ink:#2b1400;
+  --bg:#fffaf3; --muted:#7a6556; --line:#f0e2d0;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  background:var(--bg);color:var(--ink);padding-bottom:3rem;-webkit-font-smoothing:antialiased;
+}
+
+/* ── BARRA IN ALTO ── */
+.topbar{
+  position:sticky;top:0;z-index:20;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;
+  padding:.6rem 1rem;background:var(--ink);
+}
+.lang-group,.tab-group{display:flex;gap:.3rem;}
+.topbar button{
+  font:inherit;font-size:.74rem;font-weight:600;letter-spacing:.04em;
+  color:#ffe9d1;background:transparent;border:1px solid rgba(255,233,209,.35);
+  padding:.32rem .75rem;border-radius:999px;cursor:pointer;
+  transition:background .15s,color .15s;
+}
+.topbar button:hover{background:rgba(255,233,209,.14);}
+.topbar button.active{background:var(--brand);color:var(--ink);border-color:var(--brand);}
+.tab-group button{font-size:.82rem;padding:.4rem 1rem;}
+
+/* ── PAGINA ── */
+.page{max-width:720px;margin:0 auto;padding:1.5rem 1.1rem 2rem;}
+
+/* ── HEADER ── */
+header{
+  text-align:center;padding:2.6rem 1.5rem 2.1rem;margin-bottom:2.4rem;
+  border-radius:22px;background:var(--brand);color:var(--ink);
+}
+.ornament{display:none;}
+.bar-name{font-size:clamp(2.4rem,9vw,3.6rem);font-weight:800;letter-spacing:.12em;line-height:1;}
+.bar-sub{margin-top:.8rem;font-size:.9rem;font-weight:600;letter-spacing:.08em;}
+.bar-addr{
+  margin-top:1.3rem;padding-top:1.1rem;border-top:1px solid rgba(43,20,0,.3);
+  font-size:.76rem;font-weight:500;letter-spacing:.05em;line-height:1.7;
+}
+.bar-addr a{color:inherit;text-decoration:none;}
+
+/* ── TABS ── */
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* ── SEZIONI ── */
+.section{margin-bottom:2.6rem;scroll-margin-top:64px;}
+.sh{border-bottom:3px solid var(--brand);padding-bottom:.55rem;margin-bottom:.3rem;}
+.sl{display:none;}
+.st{font-size:1.15rem;font-weight:800;letter-spacing:.03em;color:var(--ink);}
+.sub{
+  margin:1.6rem 0 .1rem;font-size:.85rem;font-weight:700;
+  letter-spacing:.04em;color:var(--muted);
+}
+
+/* ── VOCI ── */
+.mi{display:flex;align-items:baseline;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--line);}
+.mi:last-child{border-bottom:none;}
+.ii{flex:1;min-width:0;}
+.in{font-weight:600;font-size:1rem;line-height:1.35;}
+.id{font-size:.85rem;color:var(--muted);margin-top:.2rem;line-height:1.45;}
+.ino{font-size:.78rem;color:var(--muted);margin-top:.2rem;}
+.dots{display:none;}
+.ip{font-weight:800;font-size:.98rem;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums;}
+
+/* ── FOOTER ── */
+footer{text-align:center;margin-top:2.4rem;padding-top:1.4rem;border-top:1px solid var(--line);}
+.fo{display:block;color:var(--brand);letter-spacing:.5rem;margin-bottom:.6rem;}
+footer p{font-size:.78rem;color:var(--muted);line-height:1.7;}
+footer a{color:var(--ink);font-weight:600;text-decoration:underline;text-decoration-color:var(--brand);text-decoration-thickness:2px;text-underline-offset:3px;}
+
+@media (max-width:480px){
+  .page{padding:1rem .9rem 1.6rem;}
+  header{padding:2.1rem 1rem 1.8rem;border-radius:18px;}
+  .mi{gap:.7rem;}
+}
+
+/* ── NOTA (avviso gin) ── */
+.disc{margin-top:1rem;font-size:.8rem;font-style:italic;color:var(--muted);line-height:1.5;}
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="tab-group">
+    <button class="active" onclick="switchTab('drinks')" id="tab-drinks" data-i18n="tab_drinks">🍹 Bere</button>
+    <button onclick="switchTab('food')" id="tab-food" data-i18n="tab_food">🍽️ Cibo</button>
+  </div>
+  <div class="lang-group">
+    <button class="active" onclick="setLang('it')">🇮🇹 IT</button>
+    <button onclick="setLang('en')">🇬🇧 EN</button>
+    <button onclick="setLang('de')">🇩🇪 DE</button>
+    <button onclick="setLang('fr')">🇫🇷 FR</button>
+  </div>
+</div>
+
+<div class="page">
+  <header>
+    <span class="ornament">✦ ✦ ✦</span>
+    <h1 class="bar-name">CAFE44</h1>
+    <p class="bar-sub" data-i18n="subtitle">Bar e caffetteria</p>
+    <p class="bar-addr">Via Alfredo Panzini 44 — Bellaria-Igea Marina (RN)<br>☎ <a href="tel:+390541340628">+39 0541 340628</a></p>
+  </header>
+
+<!-- BEVANDE -->
+<div class="tab-content active" id="tab-drinks-content">
+<div class="section" id="caffetteria"><div class="sh"><span class="st" data-i18n="sec_coffee">☕ Caffetteria</span></div>
+<div class="mi"><div class="ii"><div class="in">Espresso</div></div><div class="dots"></div><div class="ip">1,40 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_decaf">Espresso decaffeinato</div></div><div class="dots"></div><div class="ip">1,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_orzo_s">Caffè d'orzo (piccolo)</div><div class="id" data-i18n="d_barley">A base di orzo, senza caffeina</div></div><div class="dots"></div><div class="ip">1,60 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_orzo_l">Caffè d'orzo (grande)</div><div class="id" data-i18n="d_barley">A base di orzo, senza caffeina</div></div><div class="dots"></div><div class="ip">2,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_amer">Caffè americano</div></div><div class="dots"></div><div class="ip">1,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_corretto">Caffè corretto</div><div class="id" data-i18n="d_corretto">Espresso con grappa o sambuca</div></div><div class="dots"></div><div class="ip">1,90 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_shakerato">Caffè shakerato</div><div class="id" data-i18n="d_shakerato">Espresso shakerato con ghiaccio</div></div><div class="dots"></div><div class="ip">3,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_shakerato_c">Caffè shakerato corretto</div></div><div class="dots"></div><div class="ip">4,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_gin_s">Ginseng (piccolo)</div></div><div class="dots"></div><div class="ip">1,60 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_gin_l">Ginseng (grande)</div></div><div class="dots"></div><div class="ip">2,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Monte Bianco</div></div><div class="dots"></div><div class="ip">2,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Cappuccino</div></div><div class="dots"></div><div class="ip">1,80 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_capsoy">Cappuccino con latte vegetale</div><div class="id" data-i18n="d_soy">Con latte di soia o avena</div></div><div class="dots"></div><div class="ip">1,90 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_milk">Latte bianco</div></div><div class="dots"></div><div class="ip">1,40 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Macchiatone</div></div><div class="dots"></div><div class="ip">1,60 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_tea">Tè caldo e tisane</div></div><div class="dots"></div><div class="ip">3,00 €</div></div>
+</div>
+<div class="section" id="bevande"><div class="sh"><span class="st" data-i18n="sec_drinks">🥤 Bevande e bibite</span></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_glass">Bicchiere d'acqua da 0,25L</div></div><div class="dots"></div><div class="ip">1,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_water_s">Acqua in bottiglia da 0,5L</div><div class="id" data-i18n="d_water">Naturale o frizzante</div></div><div class="dots"></div><div class="ip">1,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_water_l">Acqua in bottiglia da 1L</div><div class="id" data-i18n="d_water">Naturale o frizzante</div></div><div class="dots"></div><div class="ip">2,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_juice">Succhi di frutta</div></div><div class="dots"></div><div class="ip">3,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_soda_can">Bibite in lattina</div></div><div class="dots"></div><div class="ip">3,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_soda_glass">Bibite in vetro</div></div><div class="dots"></div><div class="ip">3,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_bio">Bibite Galvanina</div><div class="id" data-i18n="d_organic">Biologiche</div></div><div class="dots"></div><div class="ip">4,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_orange">Spremuta d'arancia</div><div class="id" data-i18n="d_fresh">Fatta sul momento</div></div><div class="dots"></div><div class="ip">4,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_waterMint">Acqua e menta</div></div><div class="dots"></div><div class="ip">2,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_milkmint">Latte e menta</div></div><div class="dots"></div><div class="ip">2,30 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_energy">Red Bull</div></div><div class="dots"></div><div class="ip">4,00 €</div></div>
+</div>
+<div class="section" id="aperitivi"><div class="sh"><span class="st" data-i18n="sec_aperitifs">🍹 Aperitivi</span></div>
+<div class="mi"><div class="ii"><div class="in">Crodino XL</div><div class="id" data-i18n="d_nonalc">Analcolico</div><div class="ino" data-i18n="n_aperol">+ prosecco 1,00 € · + gin o vodka 1,50 €</div></div><div class="dots"></div><div class="ip">4,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">San Bitter</div><div class="id" data-i18n="d_nonalc">Analcolico</div><div class="ino" data-i18n="n_aperol">+ prosecco 1,00 € · + gin o vodka 1,50 €</div></div><div class="dots"></div><div class="ip">4,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Aperol soda</div><div class="ino" data-i18n="n_aperol">+ prosecco 1,00 € · + gin o vodka 1,50 €</div></div><div class="dots"></div><div class="ip">4,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Campari soda</div><div class="ino" data-i18n="n_aperol">+ prosecco 1,00 € · + gin o vodka 1,50 €</div></div><div class="dots"></div><div class="ip">4,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_carpano">Carpano rosso o bianco</div><div class="id" data-i18n="d_vermouth">Vermut</div></div><div class="dots"></div><div class="ip">4,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Ricard / Pernod</div><div class="id" data-i18n="d_anise">Anice</div></div><div class="dots"></div><div class="ip">4,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Spritz Aperol</div><div class="id" data-i18n="d_spritz">Aperol, prosecco, soda</div></div><div class="dots"></div><div class="ip">6,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Spritz Campari</div><div class="id" data-i18n="d_spritz_camp">Campari, prosecco, soda</div></div><div class="dots"></div><div class="ip">6,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Spritz Cynar</div><div class="id" data-i18n="d_spritz_cynar">Cynar, prosecco, soda</div></div><div class="dots"></div><div class="ip">6,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Spritz Limoncello</div><div class="id" data-i18n="d_spritz_limon">Limoncello, prosecco, soda</div></div><div class="dots"></div><div class="ip">6,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Spritz Select</div><div class="id" data-i18n="d_spritz_select">Select, prosecco, soda</div></div><div class="dots"></div><div class="ip">6,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_spritz_w">Spritz bianco</div><div class="id" data-i18n="d_spritz_w">Prosecco, soda, scorza di limone</div></div><div class="dots"></div><div class="ip">5,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_spritz_b">Spritz bastardo</div><div class="id" data-i18n="d_spritz_mix">Mix di Campari Bitter e Aperol</div></div><div class="dots"></div><div class="ip">6,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Negroni</div><div class="id" data-i18n="d_negroni">Gin, Campari, Carpano rosso</div></div><div class="dots"></div><div class="ip">8,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_neg_sbag">Negroni sbagliato</div><div class="id" data-i18n="d_neg_sbag">Con prosecco al posto del gin</div></div><div class="dots"></div><div class="ip">8,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Americano</div><div class="id" data-i18n="d_americano">Campari, Carpano rosso, soda</div></div><div class="dots"></div><div class="ip">7,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Campari orange</div><div class="id" data-i18n="d_camp_or">Campari, succo d'arancia</div></div><div class="dots"></div><div class="ip">8,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Ugo</div><div class="id" data-i18n="d_ugo">Prosecco, fiori di sambuco, menta</div></div><div class="dots"></div><div class="ip">6,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_house_0">Aperitivo della casa (analcolico)</div></div><div class="dots"></div><div class="ip">6,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_house_1">Aperitivo della casa (alcolico)</div></div><div class="dots"></div><div class="ip">7,50 €</div></div>
+</div>
+<div class="section" id="birre"><div class="sh"><span class="st" data-i18n="sec_beers">🍺 Birre</span></div>
+<div class="mi"><div class="ii"><div class="in">HB Traunstein / Hacker-Pschorr Pils</div><div class="id" data-i18n="d_beer_s">Birra chiara a bassa fermentazione, 5,5% vol. — 0,3L</div></div><div class="dots"></div><div class="ip">4,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">HB Traunstein / Hacker-Pschorr Pils</div><div class="id" data-i18n="d_beer_l">Birra chiara a bassa fermentazione, 5,5% vol. — 0,5L</div></div><div class="dots"></div><div class="ip">6,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_bottles">Birre in bottiglia</div><div class="id" data-i18n="d_bottles">Oltre 70 etichette: pils, lager, IPA, APA, stout. Chiedi al personale.</div></div><div class="dots"></div><div class="ip">4,00–6,50 €</div></div>
+</div>
+<div class="section" id="amari"><div class="sh"><span class="st" data-i18n="sec_digestifs">🥃 Amari</span></div>
+<div class="mi"><div class="ii"><div class="in">Amaro Montenegro</div></div><div class="dots"></div><div class="ip">4,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Amaro del Capo</div></div><div class="dots"></div><div class="ip">4,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Jägermeister</div></div><div class="dots"></div><div class="ip">4,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Fernet-Branca</div></div><div class="dots"></div><div class="ip">4,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Branca Menta</div></div><div class="dots"></div><div class="ip">4,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Cynar</div></div><div class="dots"></div><div class="ip">4,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Ramazzotti</div></div><div class="dots"></div><div class="ip">4,50 €</div></div>
+</div>
+<div class="section" id="grappe"><div class="sh"><span class="st" data-i18n="sec_grappa">🍶 Grappe</span></div>
+<div class="mi"><div class="ii"><div class="in">Poli Sarpa</div></div><div class="dots"></div><div class="ip">4,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Poli Sarpa Barrique</div><div class="id" data-i18n="d_aged">Affinata in botte</div></div><div class="dots"></div><div class="ip">4,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_prime">Prime uve bianche</div><div class="id" data-i18n="d_wgrapes">Da uve bianche</div></div><div class="dots"></div><div class="ip">5,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Bottega Morbida</div></div><div class="dots"></div><div class="ip">4,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">903 Barricata</div></div><div class="dots"></div><div class="ip">4,00 €</div></div>
+</div>
+<div class="section" id="whisky"><div class="sh"><span class="st">🥃 Whisky</span></div>
+<div class="mi"><div class="ii"><div class="in">Jack Daniel's</div><div class="id" data-i18n="d_tenn">Whiskey del Tennessee</div></div><div class="dots"></div><div class="ip">4,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Johnnie Walker Black Label</div><div class="id" data-i18n="d_jw12">Whisky scozzese blended, 12 anni</div></div><div class="dots"></div><div class="ip">5,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">The Glenlivet</div><div class="id" data-i18n="d_glen">Whisky scozzese single malt</div></div><div class="dots"></div><div class="ip">5,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Tamnavulin</div><div class="id" data-i18n="d_glen">Whisky scozzese single malt</div></div><div class="dots"></div><div class="ip">5,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Rémy Martin</div><div class="id">Cognac</div></div><div class="dots"></div><div class="ip">8,00 €</div></div>
+</div>
+<div class="section" id="rum"><div class="sh"><span class="st" data-i18n="sec_rum">🍹 Rum</span></div>
+<div class="mi"><div class="ii"><div class="in">Barceló Dorado</div><div class="id" data-i18n="d_domrep">Repubblica Dominicana</div></div><div class="dots"></div><div class="ip">4,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Havana Especial</div><div class="id" data-i18n="d_cuba_c">Cuba</div></div><div class="dots"></div><div class="ip">4,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_app12">Appleton Estate 12 anni</div><div class="id" data-i18n="d_jamaica">Giamaica</div></div><div class="dots"></div><div class="ip">8,00 €</div></div>
+</div>
+<div class="section" id="cocktails"><div class="sh"><span class="st" data-i18n="sec_cocktails">🍸 Cocktail e long drink</span></div>
+<div class="mi"><div class="ii"><div class="in">Caipirinha</div><div class="id" data-i18n="d_caip">Cachaça, lime, zucchero di canna, ghiaccio tritato</div></div><div class="dots"></div><div class="ip">8,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Caipiroska</div><div class="id" data-i18n="d_caipr">Vodka, lime, zucchero di canna, ghiaccio tritato</div></div><div class="dots"></div><div class="ip">8,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Cosmopolitan</div><div class="id" data-i18n="d_cosmo">Vodka, Cointreau, lime, succo di mirtillo rosso</div></div><div class="dots"></div><div class="ip">8,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Cuba libre</div><div class="id" data-i18n="d_cuba">Rum bianco, lime, Coca-Cola</div></div><div class="dots"></div><div class="ip">8,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Daiquiri</div><div class="id" data-i18n="d_daiq">Rum bianco, lime, zucchero</div></div><div class="dots"></div><div class="ip">8,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Long Island iced tea</div><div class="id" data-i18n="d_lit">Vodka, rum bianco, triple sec, gin, tequila, sweet and sour, Coca-Cola</div></div><div class="dots"></div><div class="ip">8,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Margarita</div><div class="id" data-i18n="d_marga">Tequila, triple sec, lime</div></div><div class="dots"></div><div class="ip">8,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Mojito</div><div class="id" data-i18n="d_mojito">Rum bianco, lime, zucchero di canna, menta</div></div><div class="dots"></div><div class="ip">8,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Virgin Mojito</div><div class="id" data-i18n="d_nonalc">Analcolico</div></div><div class="dots"></div><div class="ip">8,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Moscow mule</div><div class="id" data-i18n="d_mule">Vodka, ginger beer, lime</div></div><div class="dots"></div><div class="ip">8,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Piña colada</div><div class="id" data-i18n="d_pina">Rum bianco, ananas, cocco</div></div><div class="dots"></div><div class="ip">8,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Sex on the beach</div><div class="id" data-i18n="d_sex">Vodka, liquore alla pesca, succo d'arancia, succo di mirtillo rosso</div></div><div class="dots"></div><div class="ip">8,50 €</div></div>
+</div>
+<div class="section" id="gin"><div class="sh"><span class="st">🫙 Gin &amp; tonic</span></div>
+<div class="sub" data-i18n="sub_gin">Scegli il tuo gin</div>
+<div class="mi"><div class="ii"><div class="in">Plymouth · Portobello Road · Martin Miller's · Tanqueray Ten · Star of Bombay · Beefeater 24 · Mayfair</div></div><div class="dots"></div><div class="ip">6,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Macaronesia · Santa Ana · Eden Mill · Gal 41 · Hendrick's</div></div><div class="dots"></div><div class="ip">6,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">The Botanist · Caorunn · Gin Mare · Etsu · The London No. 3 · Roku · Ungava · Falterona</div></div><div class="dots"></div><div class="ip">7,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Baigur</div></div><div class="dots"></div><div class="ip">7,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Kinobi</div></div><div class="dots"></div><div class="ip">8,00 €</div></div>
+<div class="sub" data-i18n="sub_tonic">Scegli la tua tonica</div>
+<div class="mi"><div class="ii"><div class="in">Schweppes</div></div><div class="dots"></div><div class="ip">3,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Fever-Tree · Goldberg · Thomas Henry · J. Gasco · 3 Cents · Brillante · Franklin &amp; Sons · Fentimans</div></div><div class="dots"></div><div class="ip">3,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Tribute · 1724</div></div><div class="dots"></div><div class="ip">4,00 €</div></div>
+<p class="disc" data-i18n="gin_note">Non tutti i gin o tutte le toniche sono sempre disponibili: chiedi al personale.</p>
+</div>
+</div>
+
+<!-- CIBO -->
+<div class="tab-content" id="tab-food-content">
+<div class="section" id="piadina"><div class="sh"><span class="st" data-i18n="sec_piadina">🫓 La nostra piadina</span></div>
+<div class="sub" data-i18n="sub_simple">Piadine semplici</div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_simple">Prosciutto cotto · würstel · salame piccante · speck · bresaola · tonno · prosciutto crudo</div></div><div class="dots"></div><div class="ip">6,00 €</div></div>
+<div class="sub" data-i18n="sub_extras">Aggiunte</div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_extras">Grana · fontina · mozzarella · squacquerone · scamorza · insalata · pomodori · rucola</div></div><div class="dots"></div><div class="ip">+1,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_sauces">Maionese o ketchup</div></div><div class="dots"></div><div class="ip">+0,50 €</div></div>
+<div class="sub" data-i18n="sub_specials">Le speciali del 44</div>
+<div class="mi"><div class="ii"><div class="in">Romagnola</div><div class="id" data-i18n="d_romagnola">Prosciutto crudo, squacquerone, rucola</div></div><div class="dots"></div><div class="ip">8,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Emiliana</div><div class="id" data-i18n="d_emiliana">Prosciutto crudo, grana, pomodori, rucola</div></div><div class="dots"></div><div class="ip">9,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Montanara</div><div class="id" data-i18n="d_montanara">Speck, brie, funghi, salsa rosa</div></div><div class="dots"></div><div class="ip">8,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Diavola</div><div class="id" data-i18n="d_diavola">Salame piccante, fontina, Tabasco</div></div><div class="dots"></div><div class="ip">7,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Bellaria</div><div class="id" data-i18n="d_bellaria_p">Prosciutto cotto, funghi, lattuga, maionese</div></div><div class="dots"></div><div class="ip">8,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Adriatico</div><div class="id" data-i18n="d_adriatico">Tonno, mozzarella, pomodorini</div></div><div class="dots"></div><div class="ip">8,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">44</div><div class="id" data-i18n="d_44p">Prosciutto cotto, scamorza affumicata, funghi, pomodori, salsa rosa</div></div><div class="dots"></div><div class="ip">9,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_empty">Piada vuota</div></div><div class="dots"></div><div class="ip">0,00 €</div></div>
+</div>
+<div class="section" id="panini"><div class="sh"><span class="st" data-i18n="sec_sandwiches">🥪 Panini farciti</span></div>
+<div class="mi"><div class="ii"><div class="in">Toast</div><div class="id" data-i18n="d_toast">Prosciutto cotto, fontina</div></div><div class="dots"></div><div class="ip">3,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Americano</div><div class="id" data-i18n="d_pan_am">Prosciutto cotto, fontina, maionese</div></div><div class="dots"></div><div class="ip">5,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="n_tuna">Tonno</div><div class="id" data-i18n="d_pan_tuna">Tonno, insalata, pomodoro, maionese</div></div><div class="dots"></div><div class="ip">5,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_hamch">Prosciutto crudo e fontina</div></div><div class="dots"></div><div class="ip">5,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_cookch">Prosciutto cotto e fontina</div></div><div class="dots"></div><div class="ip">5,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Tirolese</div><div class="id" data-i18n="d_tirolese">Speck, brie, rucola, salsa rosa</div></div><div class="dots"></div><div class="ip">6,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Rustico</div><div class="id" data-i18n="d_rustico">Prosciutto crudo, fontina, rucola, maionese</div></div><div class="dots"></div><div class="ip">6,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Bresaola</div><div class="id" data-i18n="d_bresaola">Bresaola, fontina, rucola, funghi</div></div><div class="dots"></div><div class="ip">6,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Lucifero</div><div class="id" data-i18n="d_lucifero">Salame piccante, scamorza, funghi</div></div><div class="dots"></div><div class="ip">6,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">44</div><div class="id" data-i18n="d_44pan">Prosciutto crudo, fontina, rucola, pomodori, funghi</div></div><div class="dots"></div><div class="ip">6,00 €</div></div>
+</div>
+<div class="section" id="burger"><div class="sh"><span class="st" data-i18n="sec_burger">🍔 Hamburger e hot dog</span></div>
+<div class="mi"><div class="ii"><div class="in">Hot dog</div></div><div class="dots"></div><div class="ip">6,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Cheeseburger</div><div class="id" data-i18n="d_cheese">Manzo 100 g, insalata, pomodoro, fontina</div></div><div class="dots"></div><div class="ip">8,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Chickenburger</div><div class="id" data-i18n="d_chicken">Cotoletta di pollo, pomodoro, insalata, fontina</div></div><div class="dots"></div><div class="ip">8,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">44Burger</div><div class="id" data-i18n="d_44burg">Manzo 200 g, bacon, cipolla, pomodoro, scamorza affumicata, insalata</div></div><div class="dots"></div><div class="ip">10,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Angusburger</div><div class="id" data-i18n="d_angus">Angus 200 g, insalata, pomodoro, fontina, cipolla</div></div><div class="dots"></div><div class="ip">11,00 €</div></div>
+</div>
+<div class="section" id="piadizza"><div class="sh"><span class="st" data-i18n="sec_piadizza">🍕 Piadizza</span></div>
+<div class="mi"><div class="ii"><div class="in">Margherita</div><div class="id" data-i18n="d_marg">Pomodoro, mozzarella</div></div><div class="dots"></div><div class="ip">7,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in" data-i18n="i_hammus">Prosciutto cotto e funghi</div><div class="id" data-i18n="d_hammus">Pomodoro, mozzarella, prosciutto cotto, funghi</div></div><div class="dots"></div><div class="ip">8,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Diavola</div><div class="id" data-i18n="d_diav_piaz">Pomodoro, mozzarella, salame piccante, funghi</div></div><div class="dots"></div><div class="ip">8,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Capricciosa</div><div class="id" data-i18n="d_capric">Pomodoro, mozzarella, prosciutto cotto, funghi, carciofini, olive nere</div></div><div class="dots"></div><div class="ip">10,00 €</div></div>
+</div>
+<div class="section" id="insalate"><div class="sh"><span class="st" data-i18n="sec_salads">🥗 Insalate</span></div>
+<div class="mi"><div class="ii"><div class="in">Caprese</div><div class="id" data-i18n="d_caprese">Pomodori, mozzarella, origano</div></div><div class="dots"></div><div class="ip">9,00 €</div></div>
+<div class="mi"><div class="ii"><div class="in">Bellaria</div><div class="id" data-i18n="d_bellaria_s">Insalata, tonno, mozzarella, cetrioli, mais, pomodori, rucola</div></div><div class="dots"></div><div class="ip">10,50 €</div></div>
+<div class="mi"><div class="ii"><div class="in">44</div><div class="id" data-i18n="d_44sal">Insalata, tonno, mozzarella, carote, mais, pomodoro, olive nere, cetrioli, rucola</div></div><div class="dots"></div><div class="ip">12,00 €</div></div>
+</div>
+</div>
+
+  <footer>
+    <span class="fo">— ✦ —</span>
+    <p data-i18n="footer">Prezzi in euro, IVA inclusa.<br>Per informazioni: <a href="tel:+390541340628">+39 0541 340628</a></p>
+  </footer>
+</div>
+
+<script>
+const T = {
+it:{
+  tab_drinks:"🍹 Bere",
+  tab_food:"🍽️ Cibo",
+  subtitle:"Bar e caffetteria",
+  sec_coffee:"☕ Caffetteria",
+  sec_drinks:"🥤 Bevande e bibite",
+  sec_aperitifs:"🍹 Aperitivi",
+  sec_beers:"🍺 Birre",
+  sec_digestifs:"🥃 Amari",
+  sec_grappa:"🍶 Grappe",
+  sec_rum:"🍹 Rum",
+  sec_cocktails:"🍸 Cocktail e long drink",
+  sec_piadina:"🫓 La nostra piadina",
+  sec_sandwiches:"🥪 Panini farciti",
+  sec_burger:"🍔 Hamburger e hot dog",
+  sec_piadizza:"🍕 Piadizza",
+  sec_salads:"🥗 Insalate",
+  n_decaf:"Espresso decaffeinato",
+  n_orzo_s:"Caffè d'orzo (piccolo)",
+  n_orzo_l:"Caffè d'orzo (grande)",
+  d_barley:"A base di orzo, senza caffeina",
+  n_amer:"Caffè americano",
+  n_corretto:"Caffè corretto",
+  d_corretto:"Espresso con grappa o sambuca",
+  n_shakerato:"Caffè shakerato",
+  d_shakerato:"Espresso shakerato con ghiaccio",
+  n_shakerato_c:"Caffè shakerato corretto",
+  n_gin_s:"Ginseng (piccolo)",
+  n_gin_l:"Ginseng (grande)",
+  n_capsoy:"Cappuccino con latte vegetale",
+  d_soy:"Con latte di soia o avena",
+  n_milk:"Latte bianco",
+  i_tea:"Tè caldo e tisane",
+  i_glass:"Bicchiere d'acqua da 0,25L",
+  i_water_s:"Acqua in bottiglia da 0,5L",
+  i_water_l:"Acqua in bottiglia da 1L",
+  d_water:"Naturale o frizzante",
+  i_juice:"Succhi di frutta",
+  i_soda_can:"Bibite in lattina",
+  i_soda_glass:"Bibite in vetro",
+  n_bio:"Bibite Galvanina",
+  d_organic:"Biologiche",
+  i_orange:"Spremuta d'arancia",
+  d_fresh:"Fatta sul momento",
+  i_waterMint:"Acqua e menta",
+  n_milkmint:"Latte e menta",
+  n_empty:"Piada vuota",
+  n_energy:"Red Bull",
+  d_nonalc:"Analcolico",
+  n_aperol:"+ prosecco 1,00 € · + gin o vodka 1,50 €",
+  n_carpano:"Carpano rosso o bianco",
+  d_vermouth:"Vermut",
+  d_anise:"Anice",
+  d_spritz:"Aperol, prosecco, soda",
+  d_spritz_camp:"Campari, prosecco, soda",
+  d_spritz_cynar:"Cynar, prosecco, soda",
+  d_spritz_limon:"Limoncello, prosecco, soda",
+  d_spritz_select:"Select, prosecco, soda",
+  n_spritz_w:"Spritz bianco",
+  d_spritz_w:"Prosecco, soda, scorza di limone",
+  n_spritz_b:"Spritz bastardo",
+  d_spritz_mix:"Mix di Campari Bitter e Aperol",
+  d_negroni:"Gin, Campari, Carpano rosso",
+  n_neg_sbag:"Negroni sbagliato",
+  d_neg_sbag:"Con prosecco al posto del gin",
+  d_americano:"Campari, Carpano rosso, soda",
+  d_camp_or:"Campari, succo d'arancia",
+  d_ugo:"Prosecco, fiori di sambuco, menta",
+  i_house_0:"Aperitivo della casa (analcolico)",
+  i_house_1:"Aperitivo della casa (alcolico)",
+  d_beer_s:"Birra chiara a bassa fermentazione, 5,5% vol. — 0,3L",
+  d_beer_l:"Birra chiara a bassa fermentazione, 5,5% vol. — 0,5L",
+  i_bottles:"Birre in bottiglia",
+  d_bottles:"Oltre 70 etichette: pils, lager, IPA, APA, stout. Chiedi al personale.",
+  d_aged:"Affinata in botte",
+  n_prime:"Prime uve bianche",
+  d_wgrapes:"Da uve bianche",
+  d_tenn:"Whiskey del Tennessee",
+  d_glen:"Whisky scozzese single malt",
+  d_jw12:"Whisky scozzese blended, 12 anni",
+  d_jw18:"Whisky scozzese blended, 18 anni",
+  d_jw15:"Whisky scozzese blended malt, 15 anni",
+  d_domrep:"Repubblica Dominicana",
+  d_jamaica:"Giamaica",
+  d_cuba_c:"Cuba",
+  n_app12:"Appleton Estate 12 anni",
+  d_caip:"Cachaça, lime, zucchero di canna, ghiaccio tritato",
+  d_caipr:"Vodka, lime, zucchero di canna, ghiaccio tritato",
+  d_cosmo:"Vodka, Cointreau, lime, succo di mirtillo rosso",
+  d_cuba:"Rum bianco, lime, Coca-Cola",
+  d_daiq:"Rum bianco, lime, zucchero",
+  d_lit:"Vodka, rum bianco, triple sec, gin, tequila, sweet and sour, Coca-Cola",
+  d_marga:"Tequila, triple sec, lime",
+  d_mojito:"Rum bianco, lime, zucchero di canna, menta",
+  d_mule:"Vodka, ginger beer, lime",
+  d_pina:"Rum bianco, ananas, cocco",
+  d_sex:"Vodka, liquore alla pesca, succo d'arancia, succo di mirtillo rosso",
+  sub_gin:"Scegli il tuo gin",
+  sub_tonic:"Scegli la tua tonica",
+  gin_note:"Non tutti i gin sono sempre disponibili: chiedi al personale.",
+  sub_simple:"Piadine semplici",
+  sub_extras:"Aggiunte",
+  sub_specials:"Le speciali del 44",
+  i_simple:"Prosciutto cotto · würstel · salame piccante · speck · bresaola · tonno · prosciutto crudo",
+  i_extras:"Grana · fontina · mozzarella · squacquerone · scamorza · insalata · pomodori · rucola",
+  i_sauces:"Maionese o ketchup",
+  d_romagnola:"Prosciutto crudo, squacquerone, rucola",
+  d_emiliana:"Prosciutto crudo, grana, pomodori, rucola",
+  d_montanara:"Speck, brie, funghi, salsa rosa",
+  d_diavola:"Salame piccante, fontina, Tabasco",
+  d_bellaria_p:"Prosciutto cotto, funghi, lattuga, maionese",
+  d_adriatico:"Tonno, mozzarella, pomodorini",
+  d_44p:"Prosciutto cotto, scamorza affumicata, funghi, pomodori, salsa rosa",
+  d_toast:"Prosciutto cotto, fontina",
+  d_pan_am:"Prosciutto cotto, fontina, maionese",
+  n_tuna:"Tonno",
+  d_pan_tuna:"Tonno, insalata, pomodoro, maionese",
+  i_hamch:"Prosciutto crudo e fontina",
+  i_cookch:"Prosciutto cotto e fontina",
+  d_tirolese:"Speck, brie, rucola, salsa rosa",
+  d_rustico:"Prosciutto crudo, fontina, rucola, maionese",
+  d_bresaola:"Bresaola, fontina, rucola, funghi",
+  d_lucifero:"Salame piccante, scamorza, funghi",
+  d_44pan:"Prosciutto crudo, fontina, rucola, pomodori, funghi",
+  d_cheese:"Manzo 100 g, insalata, pomodoro, fontina",
+  d_chicken:"Cotoletta di pollo, pomodoro, insalata, fontina",
+  d_44burg:"Manzo 200 g, bacon, cipolla, pomodoro, scamorza affumicata, insalata",
+  d_angus:"Angus 200 g, insalata, pomodoro, fontina, cipolla",
+  d_marg:"Pomodoro, mozzarella",
+  i_hammus:"Prosciutto cotto e funghi",
+  d_hammus:"Pomodoro, mozzarella, prosciutto cotto, funghi",
+  d_diav_piaz:"Pomodoro, mozzarella, salame piccante, funghi",
+  n_4seas:"Quattro stagioni",
+  d_4seas:"Pomodoro, mozzarella, prosciutto cotto, würstel, funghi, carciofini",
+  d_capric:"Pomodoro, mozzarella, prosciutto cotto, funghi, carciofini, olive nere",
+  d_caprese:"Pomodori, mozzarella, origano",
+  d_igea:"Insalata, tonno, pomodoro, mozzarella, carote, mais",
+  d_bellaria_s:"Insalata, tonno, mozzarella, cetrioli, mais, pomodori, rucola",
+  d_44sal:"Insalata, tonno, mozzarella, carote, mais, pomodoro, olive nere, cetrioli, rucola",
+  footer:"Prezzi in euro, IVA inclusa.<br>Per informazioni: <a href=\"tel:+390541340628\">+39 0541 340628</a>"
+},
+en:{
+  tab_drinks:"🍹 Drinks",
+  tab_food:"🍽️ Food",
+  subtitle:"Bar and coffee shop",
+  sec_coffee:"☕ Coffee",
+  sec_drinks:"🥤 Drinks and soft drinks",
+  sec_aperitifs:"🍹 Aperitifs",
+  sec_beers:"🍺 Beers",
+  sec_digestifs:"🥃 Digestifs",
+  sec_grappa:"🍶 Grappas",
+  sec_rum:"🍹 Rum",
+  sec_cocktails:"🍸 Cocktails and long drinks",
+  sec_piadina:"🫓 Our piadina",
+  sec_sandwiches:"🥪 Filled sandwiches",
+  sec_burger:"🍔 Burgers and hot dogs",
+  sec_piadizza:"🍕 Piadizza",
+  sec_salads:"🥗 Salads",
+  n_decaf:"Decaf espresso",
+  n_orzo_s:"Barley coffee (small)",
+  n_orzo_l:"Barley coffee (large)",
+  d_barley:"Made from barley, caffeine-free",
+  n_amer:"Americano",
+  n_corretto:"Caffè corretto",
+  d_corretto:"Espresso with grappa or sambuca",
+  n_shakerato:"Caffè shakerato",
+  d_shakerato:"Espresso shaken with ice",
+  n_shakerato_c:"Caffè shakerato corretto",
+  n_gin_s:"Ginseng (small)",
+  n_gin_l:"Ginseng (large)",
+  n_capsoy:"Cappuccino with vegetal milk",
+  d_soy:"With soy or oat milk",
+  n_milk:"Milk",
+  i_tea:"Hot tea and herbal teas",
+  i_glass:"Glass of water, 0.25L",
+  i_water_s:"Bottled water, 0.5L",
+  i_water_l:"Bottled water, 1L",
+  d_water:"Still or sparkling",
+  i_juice:"Fruit juices",
+  i_soda_can:"Canned soft drinks",
+  i_soda_glass:"Soft drinks in glass bottles",
+  n_bio:"Galvanina soft drinks",
+  d_organic:"Organic",
+  i_orange:"Orange juice",
+  d_fresh:"Freshly squeezed",
+  i_waterMint:"Water and mint",
+  n_milkmint:"Milk and mint",
+  n_empty:"Piadina without filling",
+  n_energy:"Red Bull",
+  d_nonalc:"Non-alcoholic",
+  n_aperol:"+ prosecco €1.00 · + gin or vodka €1.50",
+  n_carpano:"Carpano red or white",
+  d_vermouth:"Vermouth",
+  d_anise:"Aniseed",
+  d_spritz:"Aperol, prosecco, soda",
+  d_spritz_camp:"Campari, prosecco, soda",
+  d_spritz_cynar:"Cynar, prosecco, soda",
+  d_spritz_limon:"Limoncello, prosecco, soda",
+  d_spritz_select:"Select, prosecco, soda",
+  n_spritz_w:"White spritz",
+  d_spritz_w:"Prosecco, soda, lemon zest",
+  n_spritz_b:"Bastard spritz",
+  d_spritz_mix:"A mix of Campari Bitter and Aperol",
+  d_negroni:"Gin, Campari, red Carpano",
+  n_neg_sbag:"Negroni sbagliato",
+  d_neg_sbag:"With prosecco instead of gin",
+  d_americano:"Campari, red Carpano, soda",
+  d_camp_or:"Campari, orange juice",
+  d_ugo:"Prosecco, elderflower, mint",
+  i_house_0:"House aperitif (non-alcoholic)",
+  i_house_1:"House aperitif (alcoholic)",
+  d_beer_s:"Pale bottom-fermented lager, 5.5% ABV — 0.3L",
+  d_beer_l:"Pale bottom-fermented lager, 5.5% ABV — 0.5L",
+  i_bottles:"Bottled beers",
+  d_bottles:"Over 70 labels: pils, lager, IPA, APA, stout. Ask our staff.",
+  d_aged:"Barrel-aged",
+  n_prime:"Prime uve bianche",
+  d_wgrapes:"Made from white grapes",
+  d_tenn:"Tennessee whiskey",
+  d_glen:"Single malt Scotch whisky",
+  d_jw12:"Blended Scotch whisky, 12 years",
+  d_jw18:"Blended Scotch whisky, 18 years",
+  d_jw15:"Blended malt Scotch whisky, 15 years",
+  d_domrep:"Dominican Republic",
+  d_jamaica:"Jamaica",
+  d_cuba_c:"Cuba",
+  n_app12:"Appleton Estate 12 years",
+  d_caip:"Cachaça, lime, cane sugar, crushed ice",
+  d_caipr:"Vodka, lime, cane sugar, crushed ice",
+  d_cosmo:"Vodka, Cointreau, lime, cranberry juice",
+  d_cuba:"White rum, lime, Coca-Cola",
+  d_daiq:"White rum, lime, sugar",
+  d_lit:"Vodka, white rum, triple sec, gin, tequila, sweet and sour mix, Coca-Cola",
+  d_marga:"Tequila, triple sec, lime",
+  d_mojito:"White rum, lime, cane sugar, mint",
+  d_mule:"Vodka, ginger beer, lime",
+  d_pina:"White rum, pineapple, coconut",
+  d_sex:"Vodka, peach liqueur, orange juice, cranberry juice",
+  sub_gin:"Choose your gin",
+  sub_tonic:"Choose your tonic water",
+  gin_note:"Not all gins or tonic waters are always available: please ask our staff.",
+  sub_simple:"Plain piadinas",
+  sub_extras:"Extras",
+  sub_specials:"The 44 specials",
+  i_simple:"Cooked ham · frankfurter · spicy salami · speck · bresaola · tuna · cured ham",
+  i_extras:"Grana · fontina · mozzarella · squacquerone · scamorza · lettuce · tomatoes · rocket",
+  i_sauces:"Mayonnaise or ketchup",
+  d_romagnola:"Cured ham, squacquerone, rocket",
+  d_emiliana:"Cured ham, grana, tomatoes, rocket",
+  d_montanara:"Speck, brie, mushrooms, Cocktail sauce",
+  d_diavola:"Spicy salami, fontina, Tabasco",
+  d_bellaria_p:"Cooked ham, mushrooms, lettuce, mayonnaise",
+  d_adriatico:"Tuna, mozzarella, cherry tomatoes",
+  d_44p:"Cooked ham, smoked scamorza, mushrooms, tomatoes, Cocktail sauce",
+  d_toast:"Cooked ham, fontina",
+  d_pan_am:"Cooked ham, fontina, mayonnaise",
+  n_tuna:"Tuna",
+  d_pan_tuna:"Tuna, lettuce, tomato, mayonnaise",
+  i_hamch:"Cured ham and fontina",
+  i_cookch:"Cooked ham and fontina",
+  d_tirolese:"Speck, brie, rocket, Cocktail sauce",
+  d_rustico:"Cured ham, fontina, rocket, mayonnaise",
+  d_bresaola:"Bresaola, fontina, rocket, mushrooms",
+  d_lucifero:"Spicy salami, scamorza, mushrooms",
+  d_44pan:"Cured ham, fontina, rocket, tomatoes, mushrooms",
+  d_cheese:"Beef 100 g, lettuce, tomato, fontina",
+  d_chicken:"Chicken cutlet, tomato, lettuce, fontina",
+  d_44burg:"Beef 200 g, bacon, onion, tomato, smoked scamorza, lettuce",
+  d_angus:"Angus 200 g, lettuce, tomato, fontina, onion",
+  d_marg:"Tomato, mozzarella",
+  i_hammus:"Cooked ham and mushrooms",
+  d_hammus:"Tomato, mozzarella, cooked ham, mushrooms",
+  d_diav_piaz:"Tomato, mozzarella, spicy salami, mushrooms",
+  n_4seas:"Four seasons",
+  d_4seas:"Tomato, mozzarella, cooked ham, frankfurter, mushrooms, artichokes",
+  d_capric:"Tomato, mozzarella, cooked ham, mushrooms, artichokes, black olives",
+  d_caprese:"Tomatoes, mozzarella, oregano",
+  d_igea:"Lettuce, tuna, tomato, mozzarella, carrots, sweetcorn",
+  d_bellaria_s:"Lettuce, tuna, mozzarella, cucumber, sweetcorn, tomatoes, rocket",
+  d_44sal:"Lettuce, tuna, mozzarella, carrots, sweetcorn, tomato, black olives, cucumber, rocket",
+  footer:"All prices include VAT.<br>Info: <a href=\"tel:+390541340628\">+39 0541 340628</a>"
+},
+de:{
+  tab_drinks:"🍹 Getränke",
+  tab_food:"🍽️ Speisen",
+  subtitle:"Bar und Café",
+  sec_coffee:"☕ Kaffee",
+  sec_drinks:"🥤 Getränke und Softdrinks",
+  sec_aperitifs:"🍹 Aperitifs",
+  sec_beers:"🍺 Biere",
+  sec_digestifs:"🥃 Digestifs",
+  sec_grappa:"🍶 Grappas",
+  sec_rum:"🍹 Rum",
+  sec_cocktails:"🍸 Cocktails und Longdrinks",
+  sec_piadina:"🫓 Unsere Piadina",
+  sec_sandwiches:"🥪 Belegte Brötchen",
+  sec_burger:"🍔 Burger und Hotdogs",
+  sec_piadizza:"🍕 Piadizza",
+  sec_salads:"🥗 Salate",
+  n_decaf:"Entkoffeinierter Espresso",
+  n_orzo_s:"Gerstenkaffee (klein)",
+  n_orzo_l:"Gerstenkaffee (groß)",
+  d_barley:"Auf Gerstenbasis, koffeinfrei",
+  n_amer:"Café Americano",
+  n_corretto:"Caffè corretto",
+  d_corretto:"Espresso mit Grappa oder Sambuca",
+  n_shakerato:"Caffè shakerato",
+  d_shakerato:"Mit Eis geschüttelter Espresso",
+  n_shakerato_c:"Caffè shakerato corretto",
+  n_gin_s:"Ginseng (klein)",
+  n_gin_l:"Ginseng (groß)",
+  n_capsoy:"Cappuccino mit Pflanzenmilch",
+  d_soy:"Mit Hafer- oder Sojamilch",
+  n_milk:"Milch",
+  i_tea:"Heißer Tee und Kräutertees",
+  i_glass:"Glas Wasser, 0,25L",
+  i_water_s:"Wasser in der Flasche, 0,5L",
+  i_water_l:"Wasser in der Flasche, 1L",
+  d_water:"Still oder mit Kohlensäure",
+  i_juice:"Fruchtsäfte",
+  i_soda_can:"Softdrinks in der Dose",
+  i_soda_glass:"Softdrinks in der Glasflasche",
+  n_bio:"Galvanina-Softdrinks",
+  d_organic:"Bio",
+  i_orange:"Orangensaft",
+  d_fresh:"Frisch gepresst",
+  i_waterMint:"Wasser mit Minze",
+  n_milkmint:"Milch mit Minze",
+  n_empty:"Piadina ohne Füllung",
+  n_energy:"Red Bull",
+  d_nonalc:"Alkoholfrei",
+  n_aperol:"+ Prosecco 1,00 € · + Gin oder Wodka 1,50 €",
+  n_carpano:"Carpano rot oder weiß",
+  d_vermouth:"Wermut",
+  d_anise:"Anis",
+  d_spritz:"Aperol, Prosecco, Soda",
+  d_spritz_camp:"Campari, Prosecco, Soda",
+  d_spritz_cynar:"Cynar, Prosecco, Soda",
+  d_spritz_limon:"Limoncello, Prosecco, Soda",
+  d_spritz_select:"Select, Prosecco, Soda",
+  n_spritz_w:"Weißer Spritz",
+  d_spritz_w:"Prosecco, Soda, Zitronenschale",
+  n_spritz_b:"Spritz Bastardo",
+  d_spritz_mix:"Mischung aus Campari Bitter und Aperol",
+  d_negroni:"Gin, Campari, roter Carpano",
+  n_neg_sbag:"Negroni sbagliato",
+  d_neg_sbag:"Mit Prosecco statt Gin",
+  d_americano:"Campari, roter Carpano, Soda",
+  d_camp_or:"Campari, Orangensaft",
+  d_ugo:"Prosecco, Holunderblütensirup, Minze",
+  i_house_0:"Hausaperitif (alkoholfrei)",
+  i_house_1:"Hausaperitif (alkoholisch)",
+  d_beer_s:"Helles, untergärig, 5,5 % Vol. — 0,3L",
+  d_beer_l:"Helles, untergärig, 5,5 % Vol. — 0,5L",
+  i_bottles:"Flaschenbiere",
+  d_bottles:"Über 70 Sorten: Pils, Lager, IPA, APA, Stout. Fragen Sie unser Personal.",
+  d_aged:"Im Fass gereift",
+  n_prime:"Prime uve bianche",
+  d_wgrapes:"Aus weißen Trauben",
+  d_tenn:"Tennessee Whiskey",
+  d_glen:"Schottischer Single Malt Whisky",
+  d_jw12:"Schottischer Blended Whisky, 12 Jahre",
+  d_jw18:"Schottischer Blended Whisky, 18 Jahre",
+  d_jw15:"Schottischer Blended Malt Whisky, 15 Jahre",
+  d_domrep:"Dominikanische Republik",
+  d_jamaica:"Jamaika",
+  d_cuba_c:"Kuba",
+  n_app12:"Appleton Estate 12 Jahre",
+  d_caip:"Cachaça, Limette, Rohrzucker, Crushed Ice",
+  d_caipr:"Wodka, Limette, Rohrzucker, Crushed Ice",
+  d_cosmo:"Wodka, Cointreau, Limette, Cranberrysaft",
+  d_cuba:"Weißer Rum, Limette, Coca-Cola",
+  d_daiq:"Weißer Rum, Limette, Zucker",
+  d_lit:"Wodka, weißer Rum, Triple Sec, Gin, Tequila, Sweet-and-Sour-Mix, Coca-Cola",
+  d_marga:"Tequila, Triple Sec, Limette",
+  d_mojito:"Weißer Rum, Limette, Rohrzucker, Minze",
+  d_mule:"Wodka, Ginger Beer, Limette",
+  d_pina:"Weißer Rum, Ananas, Kokos",
+  d_sex:"Wodka, Pfirsichlikör, Orangensaft, Cranberrysaft",
+  sub_gin:"Wählen Sie Ihren Gin",
+  sub_tonic:"Wählen Sie Ihr Tonic",
+  gin_note:"Nicht alle Gins oder Tonic Waters sind immer verfügbar.: Bitte fragen Sie unser Personal.",
+  sub_simple:"Einfache Piadinas",
+  sub_extras:"Extras",
+  sub_specials:"Die Spezialitäten des 44",
+  i_simple:"Gekochter Schinken · Würstchen · scharfe Salami · Speck · Bresaola · Thunfisch · Rohschinken",
+  i_extras:"Grana · Fontina · Mozzarella · Squacquerone · Scamorza · Salat · Tomaten · Rucola",
+  i_sauces:"Mayonnaise oder Ketchup",
+  d_romagnola:"Rohschinken, Squacquerone, Rucola",
+  d_emiliana:"Rohschinken, Grana, Tomaten, Rucola",
+  d_montanara:"Speck, Brie, Pilze, Cocktailsauce",
+  d_diavola:"Scharfe Salami, Fontina, Tabasco",
+  d_bellaria_p:"Gekochter Schinken, Pilze, Salat, Mayonnaise",
+  d_adriatico:"Thunfisch, Mozzarella, Kirschtomaten",
+  d_44p:"Gekochter Schinken, geräucherter Scamorza, Pilze, Tomaten, Cocktailsauce",
+  d_toast:"Gekochter Schinken, Fontina",
+  d_pan_am:"Gekochter Schinken, Fontina, Mayonnaise",
+  n_tuna:"Thunfisch",
+  d_pan_tuna:"Thunfisch, Salat, Tomate, Mayonnaise",
+  i_hamch:"Rohschinken und Fontina",
+  i_cookch:"Gekochter Schinken und Fontina",
+  d_tirolese:"Speck, Brie, Rucola, Cocktailsauce",
+  d_rustico:"Rohschinken, Fontina, Rucola, Mayonnaise",
+  d_bresaola:"Bresaola, Fontina, Rucola, Pilze",
+  d_lucifero:"Scharfe Salami, Scamorza, Pilze",
+  d_44pan:"Rohschinken, Fontina, Rucola, Tomaten, Pilze",
+  d_cheese:"Rindfleisch 100 g, Salat, Tomate, Fontina",
+  d_chicken:"Hähnchenschnitzel, Tomate, Salat, Fontina",
+  d_44burg:"Rindfleisch 200 g, Bacon, Zwiebel, Tomate, geräucherter Scamorza, Salat",
+  d_angus:"Angus 200 g, Salat, Tomate, Fontina, Zwiebel",
+  d_marg:"Tomate, Mozzarella",
+  i_hammus:"Gekochter Schinken und Pilze",
+  d_hammus:"Tomate, Mozzarella, gekochter Schinken, Pilze",
+  d_diav_piaz:"Tomate, Mozzarella, scharfe Salami, Pilze",
+  n_4seas:"Vier Jahreszeiten",
+  d_4seas:"Tomate, Mozzarella, gekochter Schinken, Würstchen, Pilze, Artischocken",
+  d_capric:"Tomate, Mozzarella, gekochter Schinken, Pilze, Artischocken, schwarze Oliven",
+  d_caprese:"Tomaten, Mozzarella, Oregano",
+  d_igea:"Salat, Thunfisch, Tomate, Mozzarella, Karotten, Mais",
+  d_bellaria_s:"Salat, Thunfisch, Mozzarella, Gurke, Mais, Tomaten, Rucola",
+  d_44sal:"Salat, Thunfisch, Mozzarella, Karotten, Mais, Tomate, schwarze Oliven, Gurke, Rucola",
+  footer:"Alle Preise inkl. MwSt.<br>Info: <a href=\"tel:+390541340628\">+39 0541 340628</a>"
+},
+fr:{
+  tab_drinks:"🍹 Boissons",
+  tab_food:"🍽️ Cuisine",
+  subtitle:"Bar et café",
+  sec_coffee:"☕ Café",
+  sec_drinks:"🥤 Boissons et sodas",
+  sec_aperitifs:"🍹 Apéritifs",
+  sec_beers:"🍺 Bières",
+  sec_digestifs:"🥃 Digestifs",
+  sec_grappa:"🍶 Grappas",
+  sec_rum:"🍹 Rhum",
+  sec_cocktails:"🍸 Cocktails et long drinks",
+  sec_piadina:"🫓 Notre piadina",
+  sec_sandwiches:"🥪 Sandwichs garnis",
+  sec_burger:"🍔 Burgers et hot-dogs",
+  sec_piadizza:"🍕 Piadizza",
+  sec_salads:"🥗 Salades",
+  n_decaf:"Espresso décaféiné",
+  n_orzo_s:"Café d'orge (petit)",
+  n_orzo_l:"Café d'orge (grand)",
+  d_barley:"À base d'orge, sans caféine",
+  n_amer:"Café américain",
+  n_corretto:"Caffè corretto",
+  d_corretto:"Espresso avec de la grappa ou de la sambuca",
+  n_shakerato:"Caffè shakerato",
+  d_shakerato:"Espresso secoué avec de la glace",
+  n_shakerato_c:"Caffè shakerato corretto",
+  n_gin_s:"Ginseng (petit)",
+  n_gin_l:"Ginseng (grand)",
+  n_capsoy:"Cappuccino au lait végétal",
+  d_soy:"Avec du lait d’avoine ou de soja",
+  n_milk:"Lait",
+  i_tea:"Thé chaud et tisanes",
+  i_glass:"Verre d'eau de 0,25L",
+  i_water_s:"Eau en bouteille de 0,5L",
+  i_water_l:"Eau en bouteille de 1L",
+  d_water:"Plate ou gazeuse",
+  i_juice:"Jus de fruits",
+  i_soda_can:"Sodas en canette",
+  i_soda_glass:"Sodas en bouteille en verre",
+  n_bio:"Sodas Galvanina",
+  d_organic:"Bio",
+  i_orange:"Jus d'orange",
+  d_fresh:"Pressé à la minute",
+  i_waterMint:"Eau à la menthe",
+  n_milkmint:"Lait à la menthe",
+  n_empty:"Piadina sans garniture",
+  n_energy:"Red Bull",
+  d_nonalc:"Sans alcool",
+  n_aperol:"+ prosecco 1,00 € · + gin ou vodka 1,50 €",
+  n_carpano:"Carpano rouge ou blanc",
+  d_vermouth:"Vermouth",
+  d_anise:"Anis",
+  d_spritz:"Aperol, prosecco, soda",
+  d_spritz_camp:"Campari, prosecco, soda",
+  d_spritz_cynar:"Cynar, prosecco, soda",
+  d_spritz_limon:"Limoncello, prosecco, soda",
+  d_spritz_select:"Select, prosecco, soda",
+  n_spritz_w:"Spritz blanc",
+  d_spritz_w:"Prosecco, soda, zeste de citron",
+  n_spritz_b:"Spritz bâtard",
+  d_spritz_mix:"Mélange de Campari Bitter et d'Aperol",
+  d_negroni:"Gin, Campari, Carpano rouge",
+  n_neg_sbag:"Negroni sbagliato",
+  d_neg_sbag:"Avec du prosecco à la place du gin",
+  d_americano:"Campari, Carpano rouge, soda",
+  d_camp_or:"Campari, jus d'orange",
+  d_ugo:"Prosecco, fleur de sureau, menthe",
+  i_house_0:"Apéritif maison (sans alcool)",
+  i_house_1:"Apéritif maison (avec alcool)",
+  d_beer_s:"Blonde de basse fermentation, 5,5 % vol. — 0,3L",
+  d_beer_l:"Blonde de basse fermentation, 5,5 % vol. — 0,5L",
+  i_bottles:"Bières en bouteille",
+  d_bottles:"Plus de 70 références : pils, lager, IPA, APA, stout. Demandez au personnel.",
+  d_aged:"Vieillie en fût",
+  n_prime:"Prime uve bianche",
+  d_wgrapes:"À base de raisins blancs",
+  d_tenn:"Whiskey du Tennessee",
+  d_glen:"Whisky écossais single malt",
+  d_jw12:"Whisky écossais blended, 12 ans",
+  d_jw18:"Whisky écossais blended, 18 ans",
+  d_jw15:"Whisky écossais blended malt, 15 ans",
+  d_domrep:"République dominicaine",
+  d_jamaica:"Jamaïque",
+  d_cuba_c:"Cuba",
+  n_app12:"Appleton Estate 12 ans",
+  d_caip:"Cachaça, citron vert, sucre de canne, glace pilée",
+  d_caipr:"Vodka, citron vert, sucre de canne, glace pilée",
+  d_cosmo:"Vodka, Cointreau, citron vert, jus de cranberry",
+  d_cuba:"Rhum blanc, citron vert, Coca-Cola",
+  d_daiq:"Rhum blanc, citron vert, sucre",
+  d_lit:"Vodka, rhum blanc, triple sec, gin, tequila, sweet and sour, Coca-Cola",
+  d_marga:"Tequila, triple sec, citron vert",
+  d_mojito:"Rhum blanc, citron vert, sucre de canne, menthe",
+  d_mule:"Vodka, ginger beer, citron vert",
+  d_pina:"Rhum blanc, ananas, noix de coco",
+  d_sex:"Vodka, liqueur de pêche, jus d'orange, jus de cranberry",
+  sub_gin:"Choisissez votre gin",
+  sub_tonic:"Choisissez votre tonic",
+  gin_note:"Tous les gins ou tonics ne sont pas toujours disponibles : demandez au personnel.",
+  sub_simple:"Piadinas simples",
+  sub_extras:"Suppléments",
+  sub_specials:"Les spécialités du 44",
+  i_simple:"Jambon cuit · saucisse · salami piquant · speck · bresaola · thon · jambon cru",
+  i_extras:"Grana · fontina · mozzarella · squacquerone · scamorza · salade · tomates · roquette",
+  i_sauces:"Mayonnaise ou ketchup",
+  d_romagnola:"Jambon cru, squacquerone, roquette",
+  d_emiliana:"Jambon cru, grana, tomates, roquette",
+  d_montanara:"Speck, brie, champignons, Sauce cocktail",
+  d_diavola:"Salami piquant, fontina, Tabasco",
+  d_bellaria_p:"Jambon cuit, champignons, laitue, mayonnaise",
+  d_adriatico:"Thon, mozzarella, tomates cerises",
+  d_44p:"Jambon cuit, scamorza fumée, champignons, tomates, Sauce cocktail",
+  d_toast:"Jambon cuit, fontina",
+  d_pan_am:"Jambon cuit, fontina, mayonnaise",
+  n_tuna:"Thon",
+  d_pan_tuna:"Thon, salade, tomate, mayonnaise",
+  i_hamch:"Jambon cru et fontina",
+  i_cookch:"Jambon cuit et fontina",
+  d_tirolese:"Speck, brie, roquette, Sauce cocktail",
+  d_rustico:"Jambon cru, fontina, roquette, mayonnaise",
+  d_bresaola:"Bresaola, fontina, roquette, champignons",
+  d_lucifero:"Salami piquant, scamorza, champignons",
+  d_44pan:"Jambon cru, fontina, roquette, tomates, champignons",
+  d_cheese:"Bœuf 100 g, salade, tomate, fontina",
+  d_chicken:"Escalope de poulet, tomate, salade, fontina",
+  d_44burg:"Bœuf 200 g, bacon, oignon, tomate, scamorza fumée, salade",
+  d_angus:"Angus 200 g, salade, tomate, fontina, oignon",
+  d_marg:"Tomate, mozzarella",
+  i_hammus:"Jambon cuit et champignons",
+  d_hammus:"Tomate, mozzarella, jambon cuit, champignons",
+  d_diav_piaz:"Tomate, mozzarella, salami piquant, champignons",
+  n_4seas:"Quatre saisons",
+  d_4seas:"Tomate, mozzarella, jambon cuit, saucisse, champignons, artichauts",
+  d_capric:"Tomate, mozzarella, jambon cuit, champignons, artichauts, olives noires",
+  d_caprese:"Tomates, mozzarella, origan",
+  d_igea:"Salade, thon, tomate, mozzarella, carottes, maïs",
+  d_bellaria_s:"Salade, thon, mozzarella, concombre, maïs, tomates, roquette",
+  d_44sal:"Salade, thon, mozzarella, carottes, maïs, tomate, olives noires, concombre, roquette",
+  footer:"Prix TTC.<br>Info : <a href=\"tel:+390541340628\">+39 0541 340628</a>"
+}
+};
+
+let currentLang = 'it';
+let currentTab  = 'drinks';
+
+function setLang(lang) {
+  currentLang = lang;
+  const t = T[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (t[k] !== undefined) el.innerHTML = t[k];
+  });
+  document.querySelectorAll('.lang-group button').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-group button[onclick="setLang('${lang}')"]`).classList.add('active');
+  document.documentElement.lang = lang;
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-drinks-content').classList.toggle('active', tab === 'drinks');
+  document.getElementById('tab-food-content').classList.toggle('active', tab === 'food');
+  document.getElementById('tab-drinks').classList.toggle('active', tab === 'drinks');
+  document.getElementById('tab-food').classList.toggle('active', tab === 'food');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+</script>
+</body>
+</html>
